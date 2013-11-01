@@ -20,17 +20,17 @@ function ApplyFog ()
 		y = 0.00;
 		while(y < texture.height)
 		{
-			vect = Vector3(parseFloat(x / texture.width) * terrainSize.x, 400.00, parseFloat(y / texture.height) * terrainSize.y);
+			var vect = Vector3(parseFloat(x / texture.width) * terrainSize.x, 400.00, parseFloat(y / texture.height) * terrainSize.y);
 			var hit : RaycastHit;
 			if(terrainCollider.Raycast(Ray(vect, Vector3.up * -500), hit, 500))
 			{
-				depth = 35.35 - hit.point.y;
+				var depth = 35.35 - hit.point.y;
 				if(x == 256) print(vect);
 				if(depth > 0)
 				{
-					lightCol = texture.GetPixel(x,y);
-					curCol = Color.Lerp(lightCol, Color.gray, depthAmbient * depth * fogDensity);
-					fog = Vector3(Mathf.Pow(fogColor.r, depth * fogDensity), Mathf.Pow(fogColor.g, depth * fogDensity), Mathf.Pow(fogColor.b, depth * fogDensity));
+					var lightCol = texture.GetPixel(x,y);
+					var curCol = Color.Lerp(lightCol, Color.gray, depthAmbient * depth * fogDensity);
+					var fog = Vector3(Mathf.Pow(fogColor.r, depth * fogDensity), Mathf.Pow(fogColor.g, depth * fogDensity), Mathf.Pow(fogColor.b, depth * fogDensity));
 					texture.SetPixel(x,y, Color(curCol.r * fog.x * lightCol.a, curCol.g * fog.y * lightCol.a, curCol.b * fog.z * lightCol.a, curCol.a));
 					bColorTex.SetPixel(x,y, Color(baseColor.r, baseColor.g, baseColor.b, 1));
  				}
@@ -58,7 +58,7 @@ function ApplyFog ()
 			if(baseMultBlurPixels > 0)
 			{
 				lerp = (1.00 / (4.00 * baseMultBlurPixels)) * (1 + blurOverDrive);
-				pix = baseMultBlurPixels;
+				var pix = baseMultBlurPixels;
 			}
 			else
 			{
@@ -66,7 +66,7 @@ function ApplyFog ()
 				pix = baseMultBlurPixels;
 			}
 			
-			temp = bColorTex.GetPixel(Mathf.Clamp(x, 0, texture.width - 1), Mathf.Clamp(y, 0, texture.width - 1));
+			var temp = bColorTex.GetPixel(Mathf.Clamp(x, 0, texture.width - 1), Mathf.Clamp(y, 0, texture.width - 1));
 			curCol = Color.Lerp(curCol, Color(curCol.r * temp.r, curCol.g * temp.g, curCol.b * temp.b, curCol.a), lerp);
 			while(pix > 0)
 			{

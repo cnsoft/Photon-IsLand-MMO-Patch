@@ -55,10 +55,10 @@ function Start()
 {
 	forward = transform.forward;
 	
-	obj = GameObject.FindWithTag("Player");
+	var obj = GameObject.FindWithTag("Player");
 	player = obj.transform;
 	myT = transform;
-	terr = Terrain.activeTerrain;
+	var terr = Terrain.activeTerrain;
 	if(terr)
 		terrain = terr.terrainData;
 	
@@ -217,7 +217,7 @@ function AwareLoop ()
 {
 	while(true)
 	{
-		dist = (player.position - myT.position).magnitude;
+		var dist = (player.position - myT.position).magnitude;
 		
 		if(dist < scaredDistance && status != HeronStatus.Running)
 		{
@@ -359,8 +359,8 @@ function TestDirection (position : Vector3, direction : Vector3) : float
 			while(i < colliders.length)
 			{
 				var collider : HeronCollider = colliders[i];
-				x = collider.position.x - testPos.x;
-				z = collider.position.z - testPos.z;
+				var x = collider.position.x - testPos.x;
+				var z = collider.position.z - testPos.z;
 				if(x < 0) x = -x;
 				if(z < 0) z = -z;
 				if(z + x < collider.radius)
@@ -394,13 +394,13 @@ function TestPosition (testPos : Vector3) : Vector3
 			var rotation = 0.00;
 			while(rotation < 360)
 			{
-				forwardDir = Quaternion.Euler(0, rotation, 0) * Vector3.forward;
-				forwardPos = testPos + (forwardDir * hitTestDistanceIncrement * mult * 3);
+				var forwardDir = Quaternion.Euler(0, rotation, 0) * Vector3.forward;
+				var forwardPos = testPos + (forwardDir * hitTestDistanceIncrement * mult * 3);
 				
 				//Debug.DrawRay(forwardPos, Vector3.up, Color(0.9, 0.1, 0.1, 0.7));
 				
-				forwardHeight = terrain.GetInterpolatedHeight(forwardPos.x / terrain.size.x, forwardPos.z / terrain.size.z);
-				diff = Mathf.Abs(forwardHeight - optimalHeight);
+				var forwardHeight = terrain.GetInterpolatedHeight(forwardPos.x / terrain.size.x, forwardPos.z / terrain.size.z);
+				var diff = Mathf.Abs(forwardHeight - optimalHeight);
 				if(forwardHeight < maxHeight && forwardHeight > minHeight && heightDiff > diff)
 				{
 					//Debug.DrawRay(forwardPos, Vector3.up, Color.green);
@@ -414,7 +414,7 @@ function TestPosition (testPos : Vector3) : Vector3
 		}
 	}
 	
-	move = hieghtPos - testPos;
+	var move = hieghtPos - testPos;
 	if(move.magnitude > 0.01)
 	{
 		//print("height");
@@ -430,8 +430,8 @@ function TestPosition (testPos : Vector3) : Vector3
 	while(i < colliders.length)
 	{
 		var collider : HeronCollider = colliders[i];
-		x = collider.position.x - testPos.x;
-		z = collider.position.z - testPos.z;
+		var x = collider.position.x - testPos.x;
+		var z = collider.position.z - testPos.z;
 		if(x < 0) x = -x;
 		if(z < 0) z = -z;
 		if(z + x < collider.radius)
@@ -447,10 +447,10 @@ function TestPosition (testPos : Vector3) : Vector3
 
 function LateUpdate () // leg IK
 {
-	rightHeight = terrain.GetInterpolatedHeight(rightFoot.position.x / terrain.size.x, rightFoot.position.z / terrain.size.z);
-	rightNormal = terrain.GetInterpolatedNormal(rightFoot.position.x / terrain.size.x, rightFoot.position.z / terrain.size.z);
-	leftHeight = terrain.GetInterpolatedHeight(leftFoot.position.x / terrain.size.x, leftFoot.position.z / terrain.size.z);
-	leftNormal = terrain.GetInterpolatedNormal(leftFoot.position.x / terrain.size.x, leftFoot.position.z / terrain.size.z);
+	var rightHeight = terrain.GetInterpolatedHeight(rightFoot.position.x / terrain.size.x, rightFoot.position.z / terrain.size.z);
+	var rightNormal = terrain.GetInterpolatedNormal(rightFoot.position.x / terrain.size.x, rightFoot.position.z / terrain.size.z);
+	var leftHeight = terrain.GetInterpolatedHeight(leftFoot.position.x / terrain.size.x, leftFoot.position.z / terrain.size.z);
+	var leftNormal = terrain.GetInterpolatedNormal(leftFoot.position.x / terrain.size.x, leftFoot.position.z / terrain.size.z);
 	
 	if(leftHeight < rightHeight)
 	{
@@ -458,7 +458,7 @@ function LateUpdate () // leg IK
 		leftFoot.rotation = Quaternion.LookRotation(leftFoot.forward, leftNormal);
 		leftFoot.Rotate(Vector3.right * 15);
 		
-		raise = (rightHeight - leftHeight) * 0.5;
+		var raise = (rightHeight - leftHeight) * 0.5;
 		
 		rightKnee.position.y += raise;
 		rightAnkle.position.y += raise;

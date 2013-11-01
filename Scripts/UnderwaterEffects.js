@@ -19,7 +19,7 @@ private var blur : BlurEffect;
 function Awake() {
 	if(!waterLevel)
 	{
-		water = FindObjectOfType(Water);
+		var water = FindObjectOfType(Water);
 		//if(water) waterLevel = water.gameObject;
 	}
 	aColor = RenderSettings.fogColor;

@@ -90,7 +90,7 @@ function Update ()
 
 function AddCopy (ob : GameObject, original : WaveAnimation, copy : boolean)
 {
-	newWave = ob.AddComponent(WaveAnimation);
+	var newWave = ob.AddComponent(WaveAnimation);
 	newWave.original = original;
 	if(copy) newWave.index = index + 1;
 	else newWave.index = index;
@@ -106,7 +106,7 @@ function AddCopy (ob : GameObject, original : WaveAnimation, copy : boolean)
 	
 	newWave.fadeSpeed = original.fadeSpeed;
 		
-	randy = Random.onUnitSphere; randy.y = 0;
+	var randy = Random.onUnitSphere; randy.y = 0;
 	newWave.baseScroll = randy.normalized * original.baseScroll.magnitude;
 	newWave.baseRotation = Random.Range(0,360);
 	newWave.baseScale = original.baseScale * Random.Range(0.8, 1.2);	
