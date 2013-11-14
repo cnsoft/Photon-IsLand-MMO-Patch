@@ -74,6 +74,8 @@ public class Player : MonoBehaviour
         result[0] = position.x * MmoEngine.PositionFactorHorizonal;
         result[1] = position.z * MmoEngine.PositionFactorVertical;
         result[2] = position.y;
+		Debug.Log("get position > x,z,y ");
+		Debug.Log(string.Format("Online: x={0} z={1} y={2}",result[0],result[1],result[2]));
         return result;
     }
 
@@ -131,20 +133,27 @@ public class Player : MonoBehaviour
     /// <summary>
     /// The move.
     /// </summary>
+    /// Mark: since we use static container
     private void Move()
     {
         if (Time.time > this.nextMoveTime)
         {
+			bool result = false;
             Vector3 rotation = this.transform.rotation.eulerAngles;
             if (this.lastMovePosition != this.transform.position || this.lastMoveRotation != rotation)
             {
-                this.engine.Avatar.MoveAbsolute(GetPosition(this.transform.position), GetRotation(rotation));
+                result = this.engine.Avatar.MoveAbsolute(GetPosition(this.transform.position), GetRotation(rotation));				
                 this.lastMovePosition = this.transform.position;
                 this.lastMoveRotation = rotation;
             }
-
+			if (!result)
+				Debug.Log(">>onMove failure..");
             // up to 10 times per second
             this.nextMoveTime = Time.time + 0.1f;
+			//HardCode. to display ActionId.
+			this.engine.Avatar.SetActionId( (int)Time.time);
+			
+			
         }
     }
 

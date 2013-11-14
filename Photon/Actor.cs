@@ -81,6 +81,11 @@ public class Actor : MonoBehaviour
         this.ShowActor(false);
         this.transform.localScale = new Vector3(1, 3f, 1);
         this.transform.renderer.material = (Material)Resources.Load("ActorMaterial");
+		
+		//hard code append event call back.. 
+		this.actor.ChangedAction += onChangedAction;
+		//suck!!!!
+		
     }
 
     /// <summary>
@@ -144,7 +149,15 @@ public class Actor : MonoBehaviour
         float y = pos[1] / MmoEngine.PositionFactorVertical;
         if (pos.Length == 2)
         {
-            float terrainHeight = Terrain.activeTerrain.SampleHeight(new Vector3(x, 0, y));
+			//for what? 
+			float terrainHeight;
+			if (! Terrain.activeTerrain)
+			{
+				terrainHeight = 0;
+			}else 
+			{	
+            	terrainHeight = Terrain.activeTerrain.SampleHeight(new Vector3(x, 0, y));
+			}	
             return new Vector3(x, terrainHeight + 1.5f, y);
         }
 
@@ -188,4 +201,9 @@ public class Actor : MonoBehaviour
 
         return false;
     }
+	
+	private void onChangedAction(int actid)
+	{
+		Debug.Log(string.Format("Actor got actionid {0}",actid));
+	}
 }

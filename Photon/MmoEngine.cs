@@ -24,12 +24,12 @@ public class MmoEngine : Radar, IGameListener
     /// <summary>
     /// EdgeLengthHorizontal / BoxesHorizontal
     /// </summary>
-    public const int PositionFactorHorizonal = 10;
+    public const int PositionFactorHorizonal = 1;
 
     /// <summary>
     /// EdgeLengthVertical / BoxesVertical
     /// </summary>
-    public const int PositionFactorVertical = 10;
+    public const int PositionFactorVertical = 1;
 
     /// <summary>
     /// The cam height.
@@ -40,6 +40,8 @@ public class MmoEngine : Radar, IGameListener
     /// The engine.
     /// </summary>
     private Game engine;
+	
+	public const string PlayerAvatarTag = "RobotPaperDoll";//"New_Main";
 
     /// <summary>
     /// Gets a value indicating whether IsDebugLogEnabled.
@@ -116,8 +118,8 @@ public class MmoEngine : Radar, IGameListener
             Settings settings = Settings.GetDefaultSettings();
             this.engine = new Game(this, settings, "Unity");
             this.engine.Avatar.SetText("Unity");
-
-            GameObject player = GameObject.Find("First Person Controller Prefab");
+            GameObject player = GameObject.Find(PlayerAvatarTag);//GameObject.Find("First Person Controller Prefab");			
+			//
             this.engine.Avatar.MoveAbsolute(Player.GetPosition(player.transform.position), Player.GetRotation(player.transform.rotation.eulerAngles));
             this.engine.Avatar.ResetPreviousPosition();
 
@@ -353,7 +355,7 @@ public class MmoEngine : Radar, IGameListener
     public void OnWorldEntered(Game game)
     {
         Debug.Log("entered world " + game.WorldData.Name);
-        GameObject player = GameObject.Find("First Person Controller Prefab");
+        GameObject player = GameObject.Find("RobotPaperDoll");//GameObject.Find("First Person Controller Prefab");		
         Player playerBehaviour = (Player)player.AddComponent(typeof(Player));
         playerBehaviour.Initialize(this.engine);
         this.world = game.WorldData;
@@ -376,12 +378,23 @@ public class MmoEngine : Radar, IGameListener
     /// </param>
     private void CreateActor(Game engine, Item actor)
     {
-        // do not show local actor
+		//Todo: how to extend Item to support RPC call? if so. we can call PhotonClient.callRpc(ItemId,others,{"iGotYou","a":1,"b":2})
+		// when player health change > dispatch it.  PhotonClient.callRpc(893,others,{"healthChange","1900"});
+		// seems like: broadcast in room. 
+		// in here: we have to  PhotonClient.callRpc(actor.id,"getProperties");
+		// do not show local actor  
         if (actor != engine.Avatar)
         {
-            GameObject actorCube = actor.Rotation != null ? GameObject.CreatePrimitive(PrimitiveType.Cube) : GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Actor actorBehaviour = (Actor)actorCube.AddComponent(typeof(Actor));
+			//Todo: inilized entity with entityInfo. 
+			//e.g: initialize a monster. 
+            //GameObject actorCube = actor.Rotation != null ? GameObject.CreatePrimitive(PrimitiveType.Cube) : GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+			var guai2 = Resources.Load("network/guai2");
+			//Debug.Log(guai2);
+			GameObject actorCube = Instantiate(guai2, new Vector3(0,0,0), Quaternion.Euler(0, 0, 0)) as GameObject;
+            Actor actorBehaviour = (Actor)actorCube.AddComponent(typeof(Actor));			
             actorBehaviour.Initialize(actor, this.camHeight);
+			//hard code.
+			Debug.Log("CreateActor..");
         }
     }
 
