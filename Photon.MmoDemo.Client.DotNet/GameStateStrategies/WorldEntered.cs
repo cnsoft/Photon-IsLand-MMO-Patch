@@ -378,6 +378,14 @@ namespace Photon.MmoDemo.Client.GameStateStrategies
                     {
                         item.SetInterestAreaAttached((bool)propertiesSet[Item.PropertyKeyInterestAreaAttached]);
                     }
+
+					//Custom Property: cnsoft 2013-11-14. add actionID for test only. 
+					//with this we will synchronize Entity Action. (show walk? run? fight)
+					if (propertiesSet.ContainsKey (Item.PropertyKey_ActionID)) 
+					{
+						item.Set_Actionid ((int)propertiesSet [Item.PropertyKey_ActionID]);
+					}  
+
                 }
             }
         }

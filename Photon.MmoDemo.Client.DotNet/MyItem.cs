@@ -103,6 +103,7 @@ namespace Photon.MmoDemo.Client
         /// </returns>
         public bool MoveAbsolute(float[] newPosition, float[] rotation)
         {
+           // hard code 2013-11-13
             if (newPosition[0] < this.Game.WorldData.TopLeftCorner[0])
             {
                 return false;
@@ -121,7 +122,7 @@ namespace Photon.MmoDemo.Client
             if (newPosition[1] > this.Game.WorldData.BottomRightCorner[1])
             {
                 return false;
-            }
+            } //
 
             this.SetPositions(newPosition, this.Position, rotation, this.Rotation);
             Operations.Move(this.Game, this.Id, this.Type, newPosition, rotation, this.Game.Settings.SendReliable);
@@ -221,6 +222,19 @@ namespace Photon.MmoDemo.Client
                 Operations.SetProperties(this.Game, this.Id, this.Type, new Hashtable { { PropertyKeyText, text } }, null, true);
             }
         }
+		///<summary> 
+		///Add SetAction Here 
+		///called by client when action Id changed. 
+		///</summary>
+		public void SetActionId(int id)
+		{
+			//if (id != this.actionID)
+			Operations.SetProperties (this.Game, this.Id, this.Type, new Hashtable { { Item.PropertyKey_ActionID, id } }, null, true);
+			//we need other peer got this change also. change action!! e.g: i jump . you see i jump. 
+		}
+
+
+
 
         /// <summary>
         /// The spawn.

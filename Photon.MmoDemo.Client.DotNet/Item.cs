@@ -17,7 +17,7 @@ namespace Photon.MmoDemo.Client
     /// </summary>
     public abstract class Item
     {
-        /// <summary>
+		/// <summary>
         /// The property key color.
         /// </summary>
         public static readonly string PropertyKeyColor = "color";
@@ -41,6 +41,14 @@ namespace Photon.MmoDemo.Client
         /// The property key view distance exit.
         /// </summary>
         public static readonly string PropertyKeyViewDistanceExit = "exit";
+
+		///<summary>
+		/// The custom property key: actionID,PapaerDollID,PaperDollData. 
+		/// <summary>/
+		public static readonly string PropertyKey_ActionID = "actionId"; 
+
+		public event Action<int> ChangedAction;
+		//for some guys want to handle change action.. 
 
         /// <summary>
         /// The mmo game.
@@ -371,7 +379,14 @@ namespace Photon.MmoDemo.Client
         {
             this.Text = text;
         }
-
+		/// <summary>
+		/// we create this for test only.
+		/// </summary>
+		/// <param name="i">The index.</param>
+		public void Set_Actionid (int i)
+		{
+			this.onChangeAction (i);
+		}
         /// <summary>
         /// The on moved.
         /// </summary>
@@ -382,5 +397,17 @@ namespace Photon.MmoDemo.Client
                 this.Moved(this);
             }
         }
+		/// <summary>
+		/// Ons the change action.
+		/// </summary>
+		/// <param name="i">The index.</param>
+		void onChangeAction (int i)
+		{
+			if (this.ChangedAction != null) 
+			{
+				this.ChangedAction (i);
+
+			}
+		}
     }
 }
