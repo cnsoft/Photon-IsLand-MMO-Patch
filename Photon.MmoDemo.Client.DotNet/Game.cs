@@ -134,7 +134,7 @@ namespace Photon.MmoDemo.Client
             this.AddCamera(new InterestArea(0, this, this.avatar));
             this.WorldData = new WorldData
                 {
-                    TopLeftCorner = new[] { -2000f, -2000f }, 
+				TopLeftCorner = new[] { -2000f, -2000f }, 
                     BottomRightCorner = new float[] { this.settings.GridSize[0], this.settings.GridSize[1] }, 
                     Name = this.settings.WorldName, 
                     TileDimensions = new float[] { this.settings.TileDimensions[0], this.settings.TileDimensions[1] }

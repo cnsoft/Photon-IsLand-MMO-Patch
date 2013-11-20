@@ -233,6 +233,13 @@ namespace Photon.MmoDemo.Client
 			//we need other peer got this change also. change action!! e.g: i jump . you see i jump. 
 		}
 
+		//
+		public void SetRpc(byte[] rpc)
+		{
+			//broadcast rpc to peers. peer will be called onProcessRpc
+			Operations.SetProperties (this.Game, this.Id, this.Type, new Hashtable { { Item.PropertyKey_Rpc, rpc } }, null, true);
+
+		}
 
 
 

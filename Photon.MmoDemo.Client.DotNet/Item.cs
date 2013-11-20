@@ -50,6 +50,9 @@ namespace Photon.MmoDemo.Client
 		public event Action<int> ChangedAction;
 		//for some guys want to handle change action.. 
 
+		public static readonly string PropertyKey_Rpc = "rpc2";
+		public event Action<byte[]> ProcessRpc; // 
+
         /// <summary>
         /// The mmo game.
         /// </summary>
@@ -387,6 +390,21 @@ namespace Photon.MmoDemo.Client
 		{
 			this.onChangeAction (i);
 		}
+
+
+		public void Set_Rpc(byte[] rpc)
+		{
+			//we should push Rpc into Queue and execute it async.
+			this.onProcessRpc(rpc);
+
+		}
+		void onProcessRpc(byte[] rpc)
+		{
+			if (this.ProcessRpc != null)
+				this.ProcessRpc (rpc);
+			//push into queue.?
+		}
+
         /// <summary>
         /// The on moved.
         /// </summary>
