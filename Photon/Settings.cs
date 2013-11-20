@@ -23,15 +23,15 @@ public class Settings : Photon.MmoDemo.Client.Settings
         // terrain is 2000x2000
         const int BoxesVertical = 20;
         const int BoxesHorizontal = 20;
-        const int EdgeLengthVertical = 1000;
-        const int EdgeLengthHorizontal = 1000;
+        const int EdgeLengthVertical = 10;
+        const int EdgeLengthHorizontal = 10;
 
         const int IntervalSend = 30;
         const int Velocity = 1;
         const bool SendReliable = false;
 
         const bool UseTcp = false;
-        const string ServerAddress = "localhost:5055";
+        const string ServerAddress = "192.168.1.246:5055";
         const string ApplicationName = "MmoDemo";
         const string WorldName = "Unity3d-Island";
 

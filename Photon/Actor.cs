@@ -14,6 +14,7 @@ using Photon.MmoDemo.Client;
 using UnityEngine;
 
 using Camera = UnityEngine.Camera;
+using System.Text;
 
 /// <summary>
 /// The actor.
@@ -84,6 +85,8 @@ public class Actor : MonoBehaviour
 		
 		//hard code append event call back.. 
 		this.actor.ChangedAction += onChangedAction;
+		//onRpcCall will be used call method in observer.
+		this.actor.ProcessRpc += onRpcCall; 
 		//suck!!!!
 		
     }
@@ -204,6 +207,15 @@ public class Actor : MonoBehaviour
 	
 	private void onChangedAction(int actid)
 	{
-		Debug.Log(string.Format("Actor got actionid {0}",actid));
+		//e.g: i change state. 
+		Debug.Log(string.Format("Actor {0} got actionid  {1}",this.actor.Id ,actid));
+	}
+	
+	private void onRpcCall(byte[] rpc)
+	{
+		string rpccmd = Encoding.ASCII.GetString(rpc);
+		//
+		Debug.Log(string.Format("got length= {0} rpc ={1} ",rpc.Length,rpccmd));
+		
 	}
 }

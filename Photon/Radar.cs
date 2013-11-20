@@ -35,7 +35,7 @@ public class Radar : MonoBehaviour
     ////public float maxDist = 200;
     public WorldData world;
     public Vector2 mapPosition = new Vector2(10, 10);
-    public Vector2 mapSize = new Vector2(100, 100);
+    public Vector2 mapSize = new Vector2(200, 200);
     ////public Texture radarBG;
     public Texture blibSelf;
     public string selfId;

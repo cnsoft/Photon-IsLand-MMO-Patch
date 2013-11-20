@@ -53,7 +53,14 @@ public class MmoEngine : Radar, IGameListener
             return false;
         }
     }
-
+	
+	public Game XEngine
+	{
+		get
+		{
+			return engine;
+		}
+	}
     /// <summary>
     /// The on application quit.
     /// </summary>
@@ -128,8 +135,13 @@ public class MmoEngine : Radar, IGameListener
 
             RTT rttBehaviour = (RTT)this.gameObject.AddComponent(typeof(RTT));
             rttBehaviour.Initialize(this.engine);
-
-            this.camHeight = Camera.main.transform.position.y - Terrain.activeTerrain.SampleHeight(Camera.main.transform.position);
+			if (Terrain.activeTerrain)
+            	this.camHeight = Camera.main.transform.position.y - Terrain.activeTerrain.SampleHeight(Camera.main.transform.position);
+			
+			//add test code..
+			WalkDemo demoBehaviour = (WalkDemo) this.gameObject.AddComponent(typeof(WalkDemo));
+			demoBehaviour.Initialize(this.engine);
+			
         }
         catch (Exception e)
         {
@@ -300,6 +312,7 @@ public class MmoEngine : Radar, IGameListener
             }
 
             this.CreateActor(game, item);
+		
         }
     }
 
@@ -344,6 +357,7 @@ public class MmoEngine : Radar, IGameListener
     /// </param>
     public void OnItemSpawned(byte itemType, string itemId)
     {
+		Debug.Log(string.Format("item {0} type {1} on spawned",itemId,itemType));
     }
 
     /// <summary>
@@ -361,6 +375,7 @@ public class MmoEngine : Radar, IGameListener
         this.world = game.WorldData;
         this.selfId = game.Avatar.Id + game.Avatar.Type;
         Operations.RadarSubscribe(game.Peer, game.WorldData.Name);
+		//GameClient.
     }
 
     #endregion
@@ -395,6 +410,9 @@ public class MmoEngine : Radar, IGameListener
             actorBehaviour.Initialize(actor, this.camHeight);
 			//hard code.
 			Debug.Log("CreateActor..");
+			Debug.Log("To get properties");
+			actor.GetProperties();	
+			//when be pushed. local function be called.
         }
     }
 

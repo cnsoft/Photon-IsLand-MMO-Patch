@@ -12,6 +12,7 @@ using System;
 using Photon.MmoDemo.Client;
 
 using UnityEngine;
+using System.Text;
 
 /// <summary>
 /// The player.
@@ -74,8 +75,8 @@ public class Player : MonoBehaviour
         result[0] = position.x * MmoEngine.PositionFactorHorizonal;
         result[1] = position.z * MmoEngine.PositionFactorVertical;
         result[2] = position.y;
-		Debug.Log("get position > x,z,y ");
-		Debug.Log(string.Format("Online: x={0} z={1} y={2}",result[0],result[1],result[2]));
+		//Debug.Log("get position > x,z,y ");
+		//Debug.Log(string.Format("Online: x={0} z={1} y={2}",result[0],result[1],result[2]));
         return result;
     }
 
@@ -129,6 +130,12 @@ public class Player : MonoBehaviour
             Debug.Log(e);
         }
     }
+//	static byte[] GetBytes(string str)
+//	{
+//	    byte[] bytes = new byte[str.Length * sizeof(char)];
+//	    System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+//	    return bytes;
+//	}
 
     /// <summary>
     /// The move.
@@ -153,6 +160,9 @@ public class Player : MonoBehaviour
 			//HardCode. to display ActionId.
 			this.engine.Avatar.SetActionId( (int)Time.time);
 			
+//			//in some on GUI. post event.
+//			string rpccmd = string.Format("{0},{1},{2}",0,"SayHi",this.name);
+//			this.engine.Avatar.SetRpc(Encoding.ASCII.GetBytes(rpccmd));//BitConverter.GetBytes(rpccmd));
 			
         }
     }
