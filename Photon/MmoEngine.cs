@@ -139,8 +139,10 @@ public class MmoEngine : Radar, IGameListener
             	this.camHeight = Camera.main.transform.position.y - Terrain.activeTerrain.SampleHeight(Camera.main.transform.position);
 			
 			//add test code..
+			//This script should be attached with LocalActor.
 			WalkDemo demoBehaviour = (WalkDemo) this.gameObject.AddComponent(typeof(WalkDemo));
 			demoBehaviour.Initialize(this.engine);
+			demoBehaviour.LocPlayer = player;
 			
         }
         catch (Exception e)
@@ -292,6 +294,7 @@ public class MmoEngine : Radar, IGameListener
     {
         Debug.Log("disconnected");
     }
+	
 
     /// <summary>
     /// on item added
@@ -403,7 +406,7 @@ public class MmoEngine : Radar, IGameListener
 			//Todo: inilized entity with entityInfo. 
 			//e.g: initialize a monster. 
             //GameObject actorCube = actor.Rotation != null ? GameObject.CreatePrimitive(PrimitiveType.Cube) : GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-			var guai2 = Resources.Load("network/guai2");
+			var guai2 = Resources.Load("network/SimVikingEntity");
 			//Debug.Log(guai2);
 			GameObject actorCube = Instantiate(guai2, new Vector3(0,0,0), Quaternion.Euler(0, 0, 0)) as GameObject;
             Actor actorBehaviour = (Actor)actorCube.AddComponent(typeof(Actor));			
@@ -413,6 +416,10 @@ public class MmoEngine : Radar, IGameListener
 			Debug.Log("To get properties");
 			actor.GetProperties();	
 			//when be pushed. local function be called.
+						//add test code..
+			WalkDemo demoBehaviour = (WalkDemo)actorCube.AddComponent(typeof(WalkDemo));
+			demoBehaviour.Initialize(this.engine);
+			
         }
     }
 

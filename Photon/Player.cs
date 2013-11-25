@@ -158,7 +158,8 @@ public class Player : MonoBehaviour
             // up to 10 times per second
             this.nextMoveTime = Time.time + 0.1f;
 			//HardCode. to display ActionId.
-			this.engine.Avatar.SetActionId( (int)Time.time);
+			//rem it 
+			//this.engine.Avatar.SetActionId( (int)Time.time);
 			
 //			//in some on GUI. post event.
 //			string rpccmd = string.Format("{0},{1},{2}",0,"SayHi",this.name);
