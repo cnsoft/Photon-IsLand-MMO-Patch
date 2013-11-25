@@ -10,6 +10,7 @@
 namespace Photon.MmoDemo.Client
 {
     using System;
+	using System.Collections;
     using System.Collections.Generic;
 
     /// <summary>
@@ -51,7 +52,7 @@ namespace Photon.MmoDemo.Client
 		//for some guys want to handle change action.. 
 
 		public static readonly string PropertyKey_Rpc = "rpc2";
-		public event Action<byte[]> ProcessRpc; // 
+		public event Action<Hashtable> ProcessRpc; // 
 
         /// <summary>
         /// The mmo game.
@@ -392,13 +393,13 @@ namespace Photon.MmoDemo.Client
 		}
 
 
-		public void Set_Rpc(byte[] rpc)
+		public void Set_Rpc(Hashtable rpc)
 		{
 			//we should push Rpc into Queue and execute it async.
 			this.onProcessRpc(rpc);
 
 		}
-		void onProcessRpc(byte[] rpc)
+		void onProcessRpc(Hashtable rpc)
 		{
 			if (this.ProcessRpc != null)
 				this.ProcessRpc (rpc);

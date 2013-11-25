@@ -240,6 +240,12 @@ namespace Photon.MmoDemo.Client
 			Operations.SetProperties (this.Game, this.Id, this.Type, new Hashtable { { Item.PropertyKey_Rpc, rpc } }, null, true);
 
 		}
+		public void SetRpc(Hashtable rpc)
+		{
+			//broadcast rpc to peers. peer will be called onProcessRpc
+			Operations.SetProperties (this.Game, this.Id, this.Type, new Hashtable { { Item.PropertyKey_Rpc, rpc } }, null, true);
+
+		}
 
 
 

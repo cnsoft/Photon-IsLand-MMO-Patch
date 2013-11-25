@@ -388,7 +388,7 @@ namespace Photon.MmoDemo.Client.GameStateStrategies
 					//add Rpc here. in here: we notify those who can see me. 
 					if (propertiesSet.ContainsKey (Item.PropertyKey_Rpc)) 
 					{
-						item.Set_Rpc ((Byte[])propertiesSet [Item.PropertyKey_Rpc]);
+						item.Set_Rpc ( (Hashtable)propertiesSet [Item.PropertyKey_Rpc]);
 					}  
 
                 }
