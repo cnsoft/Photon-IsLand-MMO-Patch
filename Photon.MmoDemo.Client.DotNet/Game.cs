@@ -131,7 +131,7 @@ namespace Photon.MmoDemo.Client
             this.avatar.AddVisibleInterestArea(0);
 
             this.AddItem(this.Avatar);
-            this.AddCamera(new InterestArea(0, this, this.avatar));
+            this.AddCamera(new InterestArea(0, this,(Item)this.avatar));
             this.WorldData = new WorldData
                 {
 				TopLeftCorner = new[] { -2000f, -2000f }, 

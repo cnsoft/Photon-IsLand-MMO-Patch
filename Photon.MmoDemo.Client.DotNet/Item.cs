@@ -13,9 +13,20 @@ namespace Photon.MmoDemo.Client
 	using System.Collections;
     using System.Collections.Generic;
 
+    //public static class ItemExtensions
+    //{
+    //    public static string DoIt(this IBar bar, T1 a, T2 b)
+    //    {
+    //        return bar.DoIt(a, a.GetType(), b, b.GetType());
+    //    }
+    //}
     /// <summary>
     /// The item base.
     /// </summary>
+    /// 
+
+    public delegate T Func<T>();
+
     public abstract class Item
     {
 		/// <summary>
@@ -48,11 +59,13 @@ namespace Photon.MmoDemo.Client
 		/// <summary>/
 		public static readonly string PropertyKey_ActionID = "actionId"; 
 
-		public event Action<int> ChangedAction;
+		//public event Action<int> ChangedAction;
+		public CusAction<int> ChangedAction;
 		//for some guys want to handle change action.. 
 
 		public static readonly string PropertyKey_Rpc = "rpc2";
-		public event Action<Hashtable> ProcessRpc; // 
+		//public event Action<Hashtable> ProcessRpc; // 
+		public CusAction<Hashtable> ProcessRpc; // 
 
         /// <summary>
         /// The mmo game.
@@ -99,13 +112,35 @@ namespace Photon.MmoDemo.Client
             this.type = type;
             this.visibleInterestAreas = new List<byte>();
             this.subscribedInterestAreas = new List<byte>();
+			Moved = new CusAction<string> ();
+			this.ChangedAction = new CusAction<int> ();
+			this.ProcessRpc = new CusAction<Hashtable> ();
+            _unusedMethod();//fake..
         }
 
         /// <summary>
         /// The moved.
         /// </summary>
-        public event Action<Item> Moved;
+        //public event Action<Item > Moved;
+		//public delegate T Func<T>();
 
+		//public event Action<string> Moved;//itemid will be used to find Item.
+		public CusAction<string> Moved;
+
+        private void _fakeMoved(string i)
+        {
+            ;//
+        }
+
+        void _unusedMethod()
+        {
+            //event Action<string> tmp;
+			//Action<string> tmp = new Action<string>(this._fakeMoved);
+			//tmp += new Action<string>(this._fakeMoved);
+			// this.Moved = new Action<string>(this._fakeMoved);
+			// this.Moved += new Action<string>(this._fakeMoved);
+			this.Moved += this._fakeMoved;
+        }
         /// <summary>
         /// Gets Color.
         /// </summary>
@@ -402,7 +437,7 @@ namespace Photon.MmoDemo.Client
 		void onProcessRpc(Hashtable rpc)
 		{
 			if (this.ProcessRpc != null)
-				this.ProcessRpc (rpc);
+				this.ProcessRpc.Invoke (rpc);
 			//push into queue.?
 		}
 
@@ -413,7 +448,8 @@ namespace Photon.MmoDemo.Client
         {
             if (this.Moved != null)
             {
-                this.Moved(this);
+               // this.Moved(this);
+				this.Moved.Invoke(this.Id);
             }
         }
 		/// <summary>
@@ -424,7 +460,7 @@ namespace Photon.MmoDemo.Client
 		{
 			if (this.ChangedAction != null) 
 			{
-				this.ChangedAction (i);
+				this.ChangedAction.Invoke (i);
 
 			}
 		}

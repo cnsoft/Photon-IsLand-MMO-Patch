@@ -39,11 +39,15 @@ namespace Photon.MmoDemo.Client
         /// The avatar.
         /// </param>
         [CLSCompliant(false)]
-        public InterestArea(byte cameraId, Game game, MyItem avatar)
+        public InterestArea(byte cameraId, Game game, Item avatar)
             : this(cameraId, game, avatar.Position)
         {
             this.AttachedItem = avatar;
             avatar.Moved += this.OnItemMoved;
+            //avatar.Moved += new Action<Item>(this.OnItemMoved);
+            //comment only 
+            //avatar.Moved +=  new System.Action( this.OnItemMoved );
+            //
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace Photon.MmoDemo.Client
         /// <summary>
         /// Gets AttachedItem.
         /// </summary>
-        public MyItem AttachedItem { get; private set; }
+        public Item AttachedItem { get; private set; }
 
         /// <summary>
         /// Gets Game.
@@ -115,7 +119,7 @@ namespace Photon.MmoDemo.Client
         /// <param name="item">
         /// The mmo item.
         /// </param>
-        public void AttachItem(MyItem item)
+        public void AttachItem(Item item)
         {
             if (this.AttachedItem != null)
             {
@@ -124,6 +128,8 @@ namespace Photon.MmoDemo.Client
             }
 
             this.AttachedItem = item;
+            //comment only 
+            //item.Moved += new Action(this.OnItemMoved);
             item.Moved += this.OnItemMoved;
 
             Operations.AttachInterestArea(this.game, item.Id, item.Type);
@@ -225,9 +231,9 @@ namespace Photon.MmoDemo.Client
         /// <param name="item">
         /// The mmo item.
         /// </param>
-        private void OnItemMoved(Item item)
+        private void OnItemMoved(string itemid)//Item item)
         {
-            this.Position = item.Position;
+            this.Position = AttachedItem.Position;// item.Position;
         }
     }
 }
