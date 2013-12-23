@@ -86,6 +86,8 @@ public class Radar : MonoBehaviour
         try
         {
             if (this.itemPositions.Count == 0) return;
+			
+			if ( this.world == null) return;
 
             float scaleX = this.mapSize.x / this.world.Width;
             float scaleY = this.mapSize.y / this.world.Height;

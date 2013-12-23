@@ -31,7 +31,7 @@ public class Settings : Photon.MmoDemo.Client.Settings
         const bool SendReliable = false;
 
         const bool UseTcp = false;
-        const string ServerAddress = "192.168.1.246:5055";
+        const string ServerAddress = "192.168.1.246:5058"; //changed by myself only
         const string ApplicationName = "MmoDemo";
         const string WorldName = "Unity3d-Island";
 

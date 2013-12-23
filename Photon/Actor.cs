@@ -201,6 +201,7 @@ public class Actor : MonoBehaviour
     /// </returns>
     private bool ShowActor(bool show)
     {
+		//control show or hide it.
         if (this.transform.renderer.enabled != show)
         {
             this.transform.renderer.enabled = show;

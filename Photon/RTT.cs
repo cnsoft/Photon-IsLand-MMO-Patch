@@ -49,6 +49,7 @@ public class RTT : MonoBehaviour
     /// </summary>
     public void Update()
     {
-        this.guiText.text = string.Format("{0}/{1}", this.engine.Peer.RoundTripTime, this.engine.Peer.RoundTripTimeVariance);
+		if (this.engine!=null)
+        	this.guiText.text = string.Format("{0}/{1}", this.engine.Peer.RoundTripTime, this.engine.Peer.RoundTripTimeVariance);
     }
 }
