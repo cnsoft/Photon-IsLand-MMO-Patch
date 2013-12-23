@@ -49,13 +49,51 @@ public class RoomEngine : Photon.MonoBehaviour
 		this._roomStatus = 1; //
 		
     }
+
+#region  LoadScene and Initlize. 
 	
 	void onSceneLoaded(CustomEvent evt)
 	{
+		//
+		PhotonNetwork.isMessageQueueRunning = true;
+		//open it
 	    ScenePhotonView.RPC("ResetToStone",PhotonTargets.All);
 		ScenePhotonView.RPC("LoadPlayerData",PhotonTargets.Others,new Hashtable());
-	}		
+		this.doManualPvInit();
+	}
 	
+	
+	void doManualPvInit(){
+	  if (PhotonNetwork.isMasterClient)
+		{
+			//Master Client will req server buffer these message to enable other joiner bind proxy correctly. 
+			GameObject[] coms = GameObject.FindGameObjectsWithTag("Monster");
+			foreach(GameObject com in coms)
+			{
+				GuidProperty guid = (GuidProperty) com.GetComponent<GuidProperty>();
+				if (guid ==null)
+					continue;
+				//if null do nothing
+				string objid = guid.objectid;
+				//manual alloc pvid. 
+				PhotonView pv = (PhotonView) com.GetComponent<PhotonView>();
+				if (pv==null)
+				{
+					//attached one by hand
+					com.gameObject.AddComponent(typeof(PhotonView));
+					pv = (PhotonView) com.GetComponent<PhotonView>();
+				}
+				pv.viewID = PhotonNetwork.AllocateViewID();
+				Hashtable _params = new Hashtable();
+				_params.Add(0,objid);
+				_params.Add(1,pv.viewID);
+				//Notify All Remote Client to bind proxy .
+				ScenePhotonView.RPC("BindRemoteProxy", PhotonTargets.OthersBuffered,_params);
+			}	
+		}
+	}
+	
+#endregion	
 
     void OnJoinedRoom()
     {
@@ -71,6 +109,10 @@ public class RoomEngine : Photon.MonoBehaviour
 		EventManager.instance.addEventListener("onSceneLoaded",this.gameObject,"onSceneLoaded");
 		
 		//
+		//Manual close
+		//PhotonNetwork.LoadLevel();
+		PhotonNetwork.isMessageQueueRunning = false;
+     	//after loaded open it again.
 		
 		//RoomEntity need PhotonNetwork		
 		//Notice: we should call PhotonNetwork.Instantiate to make we can see each other in room.
@@ -84,12 +126,7 @@ public class RoomEngine : Photon.MonoBehaviour
 		Debug.Log(" ScenePV is used locally." + ScenePhotonView);
 		
 		//TestNetBox.. 
-		if (PhotonNetwork.isMasterClient)
-		{
-			GameObject _netbox = PhotonNetwork.InstantiateSceneObject("network/NetBox",Vector3.zero, Quaternion.identity,0,null);//new Hashtable()[0]="aaa");
-			//DontDestroyOnLoad(_netbox);
-			Debug.Log(" netbox is created!");
-		}	
+	
 		//		
 		//PhotonNetwork.LoadLevel(4);
 		

@@ -71,6 +71,53 @@ public class RoomPlayer : Photon.MonoBehaviour
 	}
 	
 	[RPC]
+	//ScenePhotonView.RPC("BindRemoteProxy",this.gameObject,_params);
+	void BindRemoteProxy(Hashtable _params)
+	{
+		
+		string tarObjId = (string)_params[0];
+		int tarPvid = (int)_params[1];
+		
+		Debug.Log("To bind pv id "+ tarPvid +" to object by guid " + tarObjId);
+		
+		//who should bind with which pvid
+		GameObject[] coms = GameObject.FindGameObjectsWithTag("Monster");
+		foreach(GameObject com in coms)
+			{
+				GuidProperty guid = (GuidProperty) com.GetComponent<GuidProperty>();
+				if (guid ==null)
+					continue;
+				//if null do nothing
+				string objid = guid.objectid;
+				if(objid == tarObjId)
+				{
+					//find local gameobject. next assign pv id to it.
+					//manual alloc pvid. 
+					PhotonView pv = (PhotonView) com.GetComponent<PhotonView>();
+					if (pv==null)
+					{
+						//attached one by hand
+						com.gameObject.AddComponent(typeof(PhotonView));
+						pv = (PhotonView) com.GetComponent<PhotonView>();
+					}
+					pv.viewID = tarPvid;
+				 //Do disable monster script locally. since you should be mirror mode.	
+				 Monster m = com.GetComponent<Monster>();
+				 if (m)
+				 	m.enabled = false;
+				 //
+				 Robot  r = com.GetComponent<Robot>();
+				 if (r)
+				    r.enabled = false;	
+				//
+				break;
+				}
+			}
+		//done...
+	}
+	
+	
+	[RPC]
 	void LoadPlayerData(Hashtable data)
 	{
 		if (photonView.isMine)
@@ -90,7 +137,12 @@ public class RoomPlayer : Photon.MonoBehaviour
 	/// </param>
 	void ProxyRPC(Hashtable data)
 	{
+		object[] contents = data[(byte)1] as object[];
+		PhotonStream stream = new PhotonStream(false,contents);	
 		//Common RPC Proxy Method. Used to trigger local function by remote. e.g: showModel(xx) walk() ..
+		string methodname = (string)data[0];
+		SendMessage(methodname,stream,SendMessageOptions.DontRequireReceiver);
+		//
 	}
 	#endregion
 }

@@ -20,6 +20,8 @@ public class GuidProperty : MonoBehaviour {
 		}
 #endif
 		ReadUUID();
+		
+		//rpc("BindRemoteProxy",guid,pvid);
 	}
 	
 	public string ReadUUID(){
