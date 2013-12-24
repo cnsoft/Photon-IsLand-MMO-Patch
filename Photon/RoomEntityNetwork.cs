@@ -7,7 +7,7 @@ using Photon;
 /// Room entity network. Used to synchronized local and remote entity
 /// You can override it and attached to which entity you wanted.
 /// </summary>
-public class RoomEntityNetwork : Photon.MonoBehaviour{
+public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
 
 	// Use this for initialization
 	public Transform owner;
@@ -67,7 +67,8 @@ public class RoomEntityNetwork : Photon.MonoBehaviour{
 		}
 	}
 	
-	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	//Basic Serialize function. 
+	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 		Transform transform = owner;
 		if (owner!=null)
@@ -107,11 +108,11 @@ public class RoomEntityNetwork : Photon.MonoBehaviour{
     }
 	
 	
-	[RPC]
-	void SpawnOnNetwork(Vector3 pos, Quaternion rot, int id1)
-	{
-		//GameObject newPlayer = Instantiate(playerPrefab, pos, rot) as GameObject ;
-		PhotonView[] nViews = this.gameObject.GetComponentsInChildren<PhotonView>();
-		nViews[0].viewID = id1;
-	}
+	//[RPC]
+	//void SpawnOnNetwork(Vector3 pos, Quaternion rot, int id1)
+	//{
+	//	//GameObject newPlayer = Instantiate(playerPrefab, pos, rot) as GameObject ;
+	//	PhotonView[] nViews = this.gameObject.GetComponentsInChildren<PhotonView>();
+	//	nViews[0].viewID = id1;
+	//}
 }

@@ -26,12 +26,20 @@ public class RoomEngine : Photon.MonoBehaviour
 		EventManager.instance.addEventListener("LoadScene",this.gameObject,"StartLoad");
 	}
 	
+#region connect&disconnect	
 	public void Connect(){
 		//setup room connection
 		PhotonNetwork.ConnectUsingSettings("0.1");
 		Debug.LogWarning("RoomConnect connecting..");
 	}
-
+	
+	public void DisConnect(){
+		PhotonNetwork.Disconnect();
+		Debug.LogWarning("Room DisConnecting..");
+		
+	}
+#endregion	
+	
 	void OnJoinedLobby()
     {
         Debug.LogWarning ("JoinRandom!");
@@ -104,8 +112,7 @@ public class RoomEngine : Photon.MonoBehaviour
 		UIHelper.getMaster.chmGetPhysicsHandler().pcsTeleportTo( sceneId );
 		Debug.LogWarning("will moved to scene 3");
 		//
-		EventManager.instance.dispatchEvent(new CustomEvent("JoinedRoom"));
-		
+		EventManager.instance.dispatchEvent(new CustomEvent("JoinedRoom"));		
 		EventManager.instance.addEventListener("onSceneLoaded",this.gameObject,"onSceneLoaded");
 		
 		//

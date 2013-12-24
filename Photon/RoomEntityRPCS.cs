@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
+
 /// <summary>
 /// Room player. implement logic method in Room
 /// </summary>
 
-public class RoomPlayer : Photon.MonoBehaviour
+public class RoomEntityRPCS : Photon.MonoBehaviour
 {
 
 	// Use this for initialization
@@ -24,7 +25,7 @@ public class RoomPlayer : Photon.MonoBehaviour
 		}	
 	}
 	
-	#region RPCMethods
+#region RPCMethods
 	[RPC]
     void Marco()
     {
@@ -56,7 +57,7 @@ public class RoomPlayer : Photon.MonoBehaviour
 	void ResetToStone()
 	{
 		if (photonView.isMine)
-			//HardCode to hide local room Player. 2013-12-18
+			//HardCode to hide local room Player. 2013-12-18			
 			return;
 		//Move Remote Player's Proxy to Stone
 		GameObject stoneObject = GameObject.FindGameObjectWithTag( "PlayerStone" );
@@ -66,15 +67,13 @@ public class RoomPlayer : Photon.MonoBehaviour
 			transform.position[0]+= Random.Range(-50,50);
 		}//
 		Debug.Log("move player to stone position ");
-		//should also notify remote change position later?
-		
+		//should also notify remote change position later?		
 	}
 	
 	[RPC]
 	//ScenePhotonView.RPC("BindRemoteProxy",this.gameObject,_params);
 	void BindRemoteProxy(Hashtable _params)
 	{
-		
 		string tarObjId = (string)_params[0];
 		int tarPvid = (int)_params[1];
 		
@@ -129,7 +128,7 @@ public class RoomPlayer : Photon.MonoBehaviour
 	
 	[RPC]
 	/// <summary>
-	/// Proxies the RP.
+	/// Proxies the RPC to owner.
 	/// </summary>
 	/// <param name='data'>	
 	/// Data.
@@ -137,13 +136,19 @@ public class RoomPlayer : Photon.MonoBehaviour
 	/// </param>
 	void ProxyRPC(Hashtable data)
 	{
-		object[] contents = data[(byte)1] as object[];
-		PhotonStream stream = new PhotonStream(false,contents);	
+		object[] args = data[(byte)1] as object[];
+		//PhotonStream stream = new PhotonStream(false,contents);	
 		//Common RPC Proxy Method. Used to trigger local function by remote. e.g: showModel(xx) walk() ..
-		string methodname = (string)data[0];
-		SendMessage(methodname,stream,SendMessageOptions.DontRequireReceiver);
+		//Todo: convert steam to **args .
+		string methodname = (string)data[(byte)0];
+		Debug.Log(" proxy remote rpc to local method");
+		//Custom call works with hard code (int) since  HealthChange only has 1 paramter 
+		//SendMessage(methodname,(int)args[0],SendMessageOptions.DontRequireReceiver);
+		//		
+		SendMessage(methodname,args,SendMessageOptions.DontRequireReceiver);
 		//
 	}
-	#endregion
+	
+#endregion	
 }
 

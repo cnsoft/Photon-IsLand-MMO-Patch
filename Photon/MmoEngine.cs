@@ -193,6 +193,7 @@ public class MmoEngine : Radar, IGameListener
 			//handle joindRoom
 			EventManager.instance.addEventListener("JoinedRoom",this.gameObject,"onJoinedRoom");
 			EventManager.instance.addEventListener("onReqEnterRoom",this.gameObject,"onReqEnterRoomMode");
+			EventManager.instance.addEventListener("onReqLeaveRoom",this.gameObject,"onReqLeaveRoomMode");
 			
         }
         catch (Exception e)
@@ -203,11 +204,21 @@ public class MmoEngine : Radar, IGameListener
 	
 	
 #region SceneRegion
-
+	
+	public void onReqLeaveRoomMode(){
+		//attached an RoomPhotonView .and switch to room mode. 
+		RoomEngine roomPV = (RoomEngine) this.gameObject.AddComponent("RoomEngine");
+		//when it start, createRoom. leaveWorld.	
+		roomPV.DisConnect();		
+		
+	}
+	
 	
 	//clicked to trigger this
 	//is there some decroator to make state check easier.
 	public void onReqEnterRoomMode(){
+		//2013-12-24 test offline mode
+		//PhotonNetwork.offlineMode = true;		
 		//attached an RoomPhotonView .and switch to room mode. 
 		RoomEngine roomPV = (RoomEngine) this.gameObject.AddComponent("RoomEngine");
 		//when it start, createRoom. leaveWorld.	
