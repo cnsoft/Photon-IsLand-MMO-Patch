@@ -105,16 +105,24 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
         }
 		
 		//Test Player's PhotonHandle.
+		//Todo: support animator also. use rpc method. 2013-12-26 
 		if(this.owner.name =="mount_kernel")
 		{
 			if(this.owner.parent)
-			{
+			{				
 				//Monster?
 				//NetRobot r = this.owner.parent.gameObject.GetComponent<NetRobot>();
+				
+				// Go
+				// --NetRobot
+				// --RoomEntityNetwork
+				// --RoomEntityRPCS
+				// NetRobot nr = this.gameObject.GetComponent<NetRobot>(); works under the up tree.
+				
 				NetRobot nr = this.gameObject.GetComponent<NetRobot>();
 				if (nr!=null)
 					nr.OnPhotonSerializeView(stream,info);
-				//
+				//write or load.
 				Debug.Log("call back serialize for PhotonHandler");
 			}	
 		}	

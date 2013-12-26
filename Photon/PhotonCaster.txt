@@ -42,6 +42,14 @@ namespace PhotonSpace
 		{
 			//throw new System.NotImplementedException ();
 		}
+		public void RPC(string methodname,params object[]args){
+			
+		}
+		public void setProxy(NetRobot nr)
+		{
+			
+		}
+		
 	}
 	
 	// --------------------
@@ -66,6 +74,29 @@ namespace PhotonSpace
 		protected new void malDoConstruct( MasterClass ownMaster )
 		{
 			base.malDoConstruct( ownMaster );
+		}
+		
+		NetRobot _rpchandler = null;
+		public void setProxy(NetRobot nr)
+		{
+			_rpchandler = nr;
+			
+		}
+		
+		public void RPC(string methodName, PhotonTargets target, params object[] args){
+			//invoke proxy to call rpc.	
+			if(_rpchandler)
+			{
+				_rpchandler.CallRPC(methodName,target,args);
+				return;
+			}	
+			//for monster.
+			PhotonView pv = infGetMaster().gameObject.GetComponent<PhotonView>();
+			if (pv)
+			{
+				Debug.Log("for monster rpc:"+methodName);
+				pv.RPC(methodName,target,args);		
+			}	
 		}
 		
 		// --------------------
