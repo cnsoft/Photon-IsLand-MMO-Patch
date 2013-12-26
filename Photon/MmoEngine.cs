@@ -150,6 +150,13 @@ public class MmoEngine : Radar, IGameListener
     {
         try
         {
+			
+			//handle joindRoom
+			EventManager.instance.addEventListener("JoinedRoom",this.gameObject,"onJoinedRoom");
+			EventManager.instance.addEventListener("onReqEnterRoom",this.gameObject,"onReqEnterRoomMode");
+			EventManager.instance.addEventListener("onReqLeaveRoom",this.gameObject,"onReqLeaveRoomMode");
+			//
+			
             this.style.normal.textColor = Color.white;
 
             // Make the game run even when in background
@@ -163,6 +170,7 @@ public class MmoEngine : Radar, IGameListener
             Settings settings = Settings.GetDefaultSettings();
             this.engine = new Game(this, settings, "Unity");
             this.engine.Avatar.SetText("Unity");
+			//Player?
             GameObject player = GameObject.Find(PlayerAvatarTag);//GameObject.Find("First Person Controller Prefab");			
 			if (player == null)
 			{
@@ -190,15 +198,12 @@ public class MmoEngine : Radar, IGameListener
 			
 			//Hardcode.
 			Invoke("setAOI",1);
-			//handle joindRoom
-			EventManager.instance.addEventListener("JoinedRoom",this.gameObject,"onJoinedRoom");
-			EventManager.instance.addEventListener("onReqEnterRoom",this.gameObject,"onReqEnterRoomMode");
-			EventManager.instance.addEventListener("onReqLeaveRoom",this.gameObject,"onReqLeaveRoomMode");
+
 			
         }
         catch (Exception e)
         {
-            Debug.Log(e);
+            Debug.Log("mmo failure start:\n"+e);
         }
     }
 	

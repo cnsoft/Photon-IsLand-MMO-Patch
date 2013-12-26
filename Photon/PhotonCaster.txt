@@ -1,0 +1,157 @@
+// --------------------
+// NOTE:
+// this declare classes which focus on physics things.
+// --------------------
+using UnityEngine;
+using System.Collections.Generic;
+
+using MasterClass = CharacterMaster;
+
+namespace PhotonSpace
+{
+	// --------------------
+	// user class.
+	// --------------------
+	public class SharePhotonCaster: InterfaceCaster,IPhotonDataListener
+	{
+		// --------------------
+		// public method.
+		// to do manual construct.
+		// --------------------
+		protected new void malDoConstruct( MasterClass master )
+		{
+			// base do construct.
+			base.malDoConstruct( master );
+		}
+		
+		// --------------------
+		// user callback.
+		// --------------------
+		public void phnOnStart()
+		{
+		}
+		
+		// --------------------
+		// user callback.
+		// --------------------
+		public void phnOnUpdate()
+		{
+		}
+		
+		public void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
+		{
+			//throw new System.NotImplementedException ();
+		}
+	}
+	
+	// --------------------
+	// user class.
+	// photon base class for avatar only.
+	// --------------------
+	class AvatarPhotonCaster: SharePhotonCaster
+	{
+		// --------------------
+		// constructor method.
+		// --------------------		
+		public AvatarPhotonCaster( MasterClass ownMaster )
+		{
+			malDoConstruct( ownMaster );
+		}
+		
+		// --------------------
+		// override method.
+		// to do our own manual construct.
+		// all our construct works should done within this method.
+		// --------------------
+		protected new void malDoConstruct( MasterClass ownMaster )
+		{
+			base.malDoConstruct( ownMaster );
+		}
+		
+		// --------------------
+		// user callback.
+		// --------------------
+		public void phnOnUpdateModel( PaperdollSpace.PaperdollSettingType humanPd, PaperdollSpace.PaperdollSettingType mountPd )
+		{
+			_curhumanpd = humanPd;
+			_curmountpd = mountPd;
+			//saved only.
+			sent = false;
+			Debug.Log(" local saved paperdoll!");
+			if(_curmountpd!=null)
+				Debug.Log(  _curmountpd.getSerialize() );
+			if(_curhumanpd!=null)
+				Debug.Log (_curhumanpd.getSerialize() );
+			
+		}
+		
+		PaperdollSpace.PaperdollSettingType _curhumanpd;
+		PaperdollSpace.PaperdollSettingType _curmountpd;
+		bool sent = false;
+		
+		public void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info)
+		{
+			//convert string[] to stream to load in remote side.
+			if( stream.isWriting)
+			{
+				if( !sent )
+				{
+					//stream.SendNext( _curhumanpd.getSerialize()?null:0,_curhumanpd.getSerialize() );
+					Debug.Log(  _curmountpd.getSerialize() );
+					sent = true;
+					string[] _paths = _curmountpd.getSerialize();
+					stream.SendNext( (int) _paths.Length);
+					for (int i=0;i<_paths.Length;i++)
+					{
+						string _path = _paths[i];
+						stream.SendNext(_path);
+					} 
+					//stream.SendNext( _curmountpd.getSerialize() );
+					sent = true;
+				} 
+				else
+				{
+					stream.SendNext(0);
+					//stream.SendNext(0);					
+				}
+				Debug.Log(" local saved paperdoll 2!");
+			//for test.. 
+			}
+			else {
+		/*		PaperdollSpace.PaperdollSettingType humanPd = null;
+				//PaperdollSpace.PaperdollSettingType humanPd = new PaperdollSpace.PaperdollSettingType( (string[]) stream.ReceiveNext() );
+				PaperdollSpace.PaperdollSettingType mountPd = new PaperdollSpace.PaperdollSettingType( stream.ReceiveNext() as string[]);
+				// how to load it? 
+				
+				infGetPaperdollHandler().spdLoadModel(humanPd, mountPd );
+				//works or not  */
+			}
+		}
+		
+	}
+	
+	// --------------------
+	// user class.
+	// photon base class for rodoll only.
+	// --------------------
+	public class RodollPhotonCaster: SharePhotonCaster
+	{
+		// --------------------
+		// constructor method.
+		// --------------------
+		public RodollPhotonCaster( MasterClass ownMaster )
+		{
+			malDoConstruct( ownMaster );
+		}
+		
+		// --------------------
+		// override method.
+		// to do our own manual construct.
+		// all our construct works should done within this method.
+		// --------------------
+		protected new void malDoConstruct( MasterClass ownMaster )
+		{
+			base.malDoConstruct( ownMaster );
+		}
+	}
+}

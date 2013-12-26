@@ -56,12 +56,16 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 	[RPC]
 	void ResetToStone()
 	{
-		if (photonView.isMine)
+		if (photonView.isMine) //for test only
 			//HardCode to hide local room Player. 2013-12-18			
 			return;
 		//Move Remote Player's Proxy to Stone
 		GameObject stoneObject = GameObject.FindGameObjectWithTag( "PlayerStone" );
 		if (stoneObject!=null){
+			//not transform direct. should use mount_kernel. 
+			RoomEntityNetwork ren = this.gameObject.GetComponent<RoomEntityNetwork>();
+			Transform transform = ren.owner.transform;
+			//done!
 			transform.position = stoneObject.transform.position;
 			transform.rotation = stoneObject.transform.rotation;
 			transform.position[0]+= Random.Range(-50,50);
@@ -80,7 +84,7 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 		Debug.Log("To bind pv id "+ tarPvid +" to object by guid " + tarObjId);
 		
 		//who should bind with which pvid
-		GameObject[] coms = GameObject.FindGameObjectsWithTag("Monster");
+		GameObject[] coms = GameObject.FindGameObjectsWithTag("Monster"); //NetBox Also?
 		foreach(GameObject com in coms)
 			{
 				GuidProperty guid = (GuidProperty) com.GetComponent<GuidProperty>();
@@ -105,9 +109,11 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 				 if (m)
 				 	m.enabled = false;
 				 //
-				 Robot  r = com.GetComponent<Robot>();
-				 if (r)
-				    r.enabled = false;	
+				 //Robot  r = com.GetComponent<Robot>();
+				 //if (r)
+				 //   r.enabled = false;	
+				 //for player, we use it also in remote mode. 2013-12-25
+				com.SetActive(true);
 				//
 				break;
 				}
@@ -121,6 +127,7 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 	{
 		if (photonView.isMine)
 		//Local no need load data,since we use player(in Main prefab) 2013-12-18
+			
 		return;
 		Debug.Log("To load PlayerData,e.g: Weapon,paperdoll,");
 		
@@ -143,9 +150,9 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 		string methodname = (string)data[(byte)0];
 		Debug.Log(" proxy remote rpc to local method");
 		//Custom call works with hard code (int) since  HealthChange only has 1 paramter 
-		//SendMessage(methodname,(int)args[0],SendMessageOptions.DontRequireReceiver);
+		SendMessage(methodname,(int)args[0],SendMessageOptions.DontRequireReceiver);
 		//		
-		SendMessage(methodname,args,SendMessageOptions.DontRequireReceiver);
+		//SendMessage(methodname,args,SendMessageOptions.DontRequireReceiver);
 		//
 	}
 	

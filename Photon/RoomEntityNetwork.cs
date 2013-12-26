@@ -56,18 +56,30 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
 	
 	void doResetLocalObserve(){
 		//In Room Local we focuse on mount_kernel 2013-12-17
-		if(photonView.isMine)
+		//if(photonView.isMine)
+		//if(PhotonNetwork.isMasterClient)//ghost no need change it.
+		if(photonView.isMine) //local photon. now i focus on player's mount kernel transform
 		{
-			//one local observer object.
-			GameObject m = GameObject.Find("mount_kernel");
-			this.setOwner( m);
+			//one local observer object to Player. not safe. if more than one mount_kernel in scene.  2013-12-25 
+			//GameObject m = GameObject.Find("mount_kernel");
+			GameObject m = GameObject.Find("Player/mount_kernel"); //local Player			
+			this.setOwner( m );
+			
+			//Get RobotClass from Player? 
+		 	Robot r = m.transform.parent.gameObject.GetComponent<Robot>(); 	
+			
+			//find NetRobot and call SetRobot to player. 
+			NetRobot nr = this.gameObject.GetComponent<NetRobot>();
+			nr.SetRobot( r );
 			//HardCode. hide local robotPaperdoll 2013-12-18 moved to ResetToStone. (ignore that for locally)
 			//ScenePhotonView.RPC("LoadPlayerData",PhotonTargets.Others,new Hashtable());
 			//
+			Debug.Log(" reset local observe");
 		}
 	}
 	
 	//Basic Serialize function. 
+	//Maybe we should let game object do it self. 2013-12-25 since different data is needed by different gameobject
 	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
 		Transform transform = owner;
@@ -80,8 +92,9 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
         {
             //We own this player: send the others our data
             //stream.SendNext((int)controllerScript._characterState);
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation); 
+			Transform _localTS = this.owner.transform;
+            stream.SendNext(_localTS.position);
+            stream.SendNext(_localTS.rotation); 
         }
         else
         {
@@ -90,6 +103,23 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
             correctPlayerPos = (Vector3)stream.ReceiveNext();
             correctPlayerRot = (Quaternion)stream.ReceiveNext();
         }
+		
+		//Test Player's PhotonHandle.
+		if(this.owner.name =="mount_kernel")
+		{
+			if(this.owner.parent)
+			{
+				//Monster?
+				//NetRobot r = this.owner.parent.gameObject.GetComponent<NetRobot>();
+				NetRobot nr = this.gameObject.GetComponent<NetRobot>();
+				if (nr!=null)
+					nr.OnPhotonSerializeView(stream,info);
+				//
+				Debug.Log("call back serialize for PhotonHandler");
+			}	
+		}	
+		
+		
     }
 
     private Vector3 correctPlayerPos = Vector3.zero; //We lerp towards this
@@ -102,8 +132,9 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
         {
             Debug.Log(" sync position with remote copy");
 			//Update remote player (smooth this, this looks good, at the cost of some accuracy)
-            transform.position = Vector3.Lerp(transform.position, correctPlayerPos, Time.deltaTime * 5);
-            transform.rotation = Quaternion.Lerp(transform.rotation, correctPlayerRot, Time.deltaTime * 5);
+			Transform _localTS = this.owner.transform;
+            _localTS.position = Vector3.Lerp(_localTS.position, correctPlayerPos, Time.deltaTime * 5);
+            _localTS.rotation = Quaternion.Lerp(_localTS.rotation, correctPlayerRot, Time.deltaTime * 5);
         }		
     }
 	

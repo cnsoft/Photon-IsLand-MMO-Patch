@@ -66,7 +66,9 @@ public class RoomEngine : Photon.MonoBehaviour
 		PhotonNetwork.isMessageQueueRunning = true;
 		//open it
 	    ScenePhotonView.RPC("ResetToStone",PhotonTargets.All);
+		//Todo: load player data 
 		ScenePhotonView.RPC("LoadPlayerData",PhotonTargets.Others,new Hashtable());
+		//
 		this.doManualPvInit();
 	}
 	
@@ -109,7 +111,7 @@ public class RoomEngine : Photon.MonoBehaviour
 		EventManager.instance.dispatchEvent(new CustomEvent("onTeleportTo"));
 		//should changed to ui or other handler not here.
 		int sceneId = 6; //not same with buildings. 
-		UIHelper.getMaster.chmGetPhysicsHandler().pcsTeleportTo( sceneId );
+		UIHelper.getMaster.chmGetPhysicsHandler().pcsTeleportTo(-1, sceneId );
 		Debug.LogWarning("will moved to scene 3");
 		//
 		EventManager.instance.dispatchEvent(new CustomEvent("JoinedRoom"));		
@@ -128,9 +130,10 @@ public class RoomEngine : Photon.MonoBehaviour
 		_locPlayer = PhotonNetwork.Instantiate("network/NetRobotPaperDoll", Vector3.zero, Quaternion.identity,0);//(int) PhotonTargets.Others);
 		GameObject.DontDestroyOnLoad(_locPlayer);		
         ScenePhotonView = _locPlayer.GetComponent<PhotonView>();
-		
+		_locPlayer.name = GuidProperty.GetUniqueID();
+		//_locPlayer.SetActive(true);
 		//only local interface can be used.
-		Debug.Log(" ScenePV is used locally." + ScenePhotonView);
+		Debug.Log(" ScenePV is used locally. " + ScenePhotonView);
 		
 		//TestNetBox.. 
 	
@@ -193,7 +196,12 @@ public class RoomEngine : Photon.MonoBehaviour
 	}
 	public void Update()
 	{
-		//_loadSceneUpdate();			
+		//_loadSceneUpdate();	
+		if (_locPlayer && !_locPlayer.activeInHierarchy)
+		{
+			Debug.Log(" _local net link is: " + _locPlayer.activeInHierarchy);
+			//_locPlayer.SetActive(true);
+		}	
 	}
 	
     void OnGUI()		
@@ -228,7 +236,10 @@ public class RoomEngine : Photon.MonoBehaviour
 	}
 	public void OnPhotonPlayerDisconnected(PhotonPlayer player)
 	{
+		if (player.isMasterClient)
+			Debug.LogWarning(" master quit room!");
 		Debug.Log("OnPhotonPlayerDisConnected: " + player);
+		
 		
 	}
 	
