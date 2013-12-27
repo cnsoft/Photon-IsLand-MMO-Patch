@@ -1,0 +1,34 @@
+Index: StatusCaster.cs
+===================================================================
+--- StatusCaster.cs	(revision 2558)
++++ StatusCaster.cs	(working copy)
+@@ -204,6 +204,12 @@
+ 			UIPackage.UIListener.onTrigger(  UIPackage.UIListener.Message.ON_AVT_HEALTH_CHANGED );
+ 			NUISpace.NUIManager.nuiOnEvent( GlobalTechConfig.NUI_EVENT_PLYHEALTHUPDATE );
+ 			// done return.
++			//add network function.
++			//HealthChange
++			CustomEvent evt = new CustomEvent("HealthChange");
++			evt.arguments.Add(0,health_);
++			EventManager.instance.dispatchEvent(evt);
++			//end.
+ 			return Mathf.Abs( newValue - oldValue );
+ 		}
+ 		
+@@ -362,6 +368,8 @@
+ 				if( fxHandler != null )
+ 				{
+ 					bloodingFxId_ = fxHandler.efxActive( GlobalTechConfig.FX_BUILDIN_BLOODING );
++					//
++					((PhotonSpace.AvatarPhotonCaster)infGetMaster().chmGetPhotonHandler()).RPC("doEfxCast",PhotonTargets.Others,GlobalTechConfig.FX_BUILDIN_BLOODING);
+ 				}
+ 			}
+ 			else if( !blooding && bloodingFxId_ != 0 )
+@@ -371,6 +379,7 @@
+ 				if( fxHandler != null )
+ 				{
+ 					fxHandler.efxDisActiveFromId( bloodingFxId_ );
++					((PhotonSpace.AvatarPhotonCaster)infGetMaster().chmGetPhotonHandler()).RPC("doUnEfxCast",PhotonTargets.Others,GlobalTechConfig.FX_BUILDIN_BLOODING);
+ 				}
+ 				bloodingFxId_ = 0;
+ 			}

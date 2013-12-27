@@ -58,8 +58,18 @@ public class NetRobot :Robot, IPhotonDataListener
 			matchDead_ = new AnimatorParamBool( GlobalTechConfig.ANIMATOR_PARAM_DEAD );
 			matchSpeed_ = new AnimatorParamSpeed( GlobalTechConfig.ANIMATOR_PARAM_SPEED );
 		*/
+		//only update fxhandle
+		if(!photonView.isMine)
+		{
+			this.chmGetFXHandler().efxOnUpdate();			
+		}
+		
+		//doEfxCast(GlobalTechConfig.FX_BUILDIN_RENASCENCE);
+		
 		if (_watchedRobot)
 		{
+
+			
 			//sent dirty animator
 /*			Animator animator = _watchedRobot.gameObject.GetComponent<Animator>();
 			if (animator==null)
@@ -83,6 +93,7 @@ public class NetRobot :Robot, IPhotonDataListener
 	public void CallRPC(string methodName, PhotonTargets target, params object[] args){
 		//robot call this to invoke rpc method.
 		photonView.RPC(methodName,target,args);
+		Debug.Log("proxy rpc "+methodName);
 	}
 	
 	#region RPC_region
@@ -104,30 +115,53 @@ public class NetRobot :Robot, IPhotonDataListener
 		Animator amr = this.chmGetMountHandler().infGetActiveActObject().GetComponent<Animator>();
 		amr.SetFloat(attr,(float)data);		
 	}
+	
+	[RPC]
+	void doEfxCast(int fxid)
+	{
+		//if(_watchedRobot)
+		if(!photonView.isMine)
+		{	
+		 	Debug.Log("attach efx with remote data:"+fxid);
+			this.chmGetFXHandler().efxActive(fxid);
+			this.chmGetFXHandler().efxCast(fxid);
+			//we only need this wrapper function.
+		}else {
+			Debug.Log("local doEfxCast rpc!");
+		}	
+		
+	}
+	
+	[RPC]
+	void doUnEfxCast(int fxid){
+		//
+		this.chmGetFXHandler().efxDisActiveFromFxId(fxid);
+	}
+		
 	#endregion
 	
-	void setAnimatorAttrxxxx(string attr,int _type,params object[]datas)
-	{
-		//used to set local or remote animator property. to make animation works same. 
-		Animator amr = this.chmGetMountHandler().infGetActiveActObject().GetComponent<Animator>();
-		object data = (object)datas[0]; 
-		switch (_type) 
-		{
-		case 0:
-			amr.SetBool(attr,(bool)data);
-			break;
-		case 1:
-			amr.SetFloat(attr,(float)data);
-			break;
-		case 2:
-			amr.SetInteger(attr,(int)data);
-			break;
-		default:
-			;
-			break;
-		}
-		//do nothing.
-	}
+//	void setAnimatorAttrxxxx(string attr,int _type,params object[]datas)
+//	{
+//		//used to set local or remote animator property. to make animation works same. 
+//		Animator amr = this.chmGetMountHandler().infGetActiveActObject().GetComponent<Animator>();
+//		object data = (object)datas[0]; 
+//		switch (_type) 
+//		{
+//		case 0:
+//			amr.SetBool(attr,(bool)data);
+//			break;
+//		case 1:
+//			amr.SetFloat(attr,(float)data);
+//			break;
+//		case 2:
+//			amr.SetInteger(attr,(int)data);
+//			break;
+//		default:
+//			;
+//			break;
+//		}
+//		//do nothing.
+//	}
 	
 	
 	

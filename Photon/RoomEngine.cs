@@ -110,9 +110,10 @@ public class RoomEngine : Photon.MonoBehaviour
 		Debug.LogWarning("RoomPhotonView onJoinedRoom");		
 		EventManager.instance.dispatchEvent(new CustomEvent("onTeleportTo"));
 		//should changed to ui or other handler not here.
-		int sceneId = 6; //not same with buildings. 
+		int sceneId = 8886; //not same with buildings. 
+		//?
 		UIHelper.getMaster.chmGetPhysicsHandler().pcsTeleportTo(-1, sceneId );
-		Debug.LogWarning("will moved to scene 3");
+		//Debug.LogWarning("will moved to scene 3");
 		//
 		EventManager.instance.dispatchEvent(new CustomEvent("JoinedRoom"));		
 		EventManager.instance.addEventListener("onSceneLoaded",this.gameObject,"onSceneLoaded");

@@ -104,14 +104,20 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 						pv = (PhotonView) com.GetComponent<PhotonView>();
 					}
 					pv.viewID = tarPvid;
-				 //Do disable monster script locally. since you should be mirror mode.	
+				 //Do disable monster script locally. since you should be mirror mode.					  
 				 Monster m = com.GetComponent<Monster>();
-				 if (m)
-				 	m.enabled = false;
+				 //v1: only disable it. 
+				 //if (m)
+				 //	m.enabled = false;
+				 //v2: set not realClient.
+				 m.isRealClient = false;//set it is not real client.	
 				 //
 				 //Robot  r = com.GetComponent<Robot>();
 				 //if (r)
 				 //   r.enabled = false;	
+				 //V3: no changed monster script.
+				 //NetRobot nr = (NetRobot) com.AddComponent("NetRobot");
+				 //nr.isRealClient = false;
 				 //for player, we use it also in remote mode. 2013-12-25
 				com.SetActive(true);
 				//

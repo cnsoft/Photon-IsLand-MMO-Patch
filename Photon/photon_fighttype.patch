@@ -1,0 +1,23 @@
+Index: FightTypes.cs
+===================================================================
+--- FightTypes.cs	(revision 2567)
++++ FightTypes.cs	(revision 2568)
+@@ -137,6 +137,9 @@
+ 					{
+ 						FXSpace.EntityFXCaster ownFxHandler = ownMaster_.chmGetFXHandler();
+ 						ownFxHandler.efxCast( fxIdShoot );
++						//notify who cast what.. if auto cleared. done! cnsoft 2013-12-27
++						((PhotonSpace.AvatarPhotonCaster)ownMaster_.chmGetPhotonHandler() ).RPC("doEfxCast",PhotonTargets.Others, fxIdShoot);
++						
+ 					}
+ 					break;
+ 				default:
+@@ -472,7 +475,7 @@
+ 		protected virtual List<MasterClass> _srrFilterMasters( MasterClass explicitMaster )
+ 		{
+ 			List<MasterClass> srcMasters = null;
+-			if( ownMaster_.chmIsAvatar() )
++			if( ownMaster_.chmIsAvatar())
+ 			{
+ 				// yes, owner is avatar. seek for monsters...
+ 				if( explicitMaster != null )
