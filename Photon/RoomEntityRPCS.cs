@@ -12,7 +12,7 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		GameObject.DontDestroyOnLoad(this);		
+		//GameObject.DontDestroyOnLoad(this);		
 	}
 	
 	// Update is called once per frame
@@ -20,7 +20,7 @@ public class RoomEntityRPCS : Photon.MonoBehaviour
 	{
 		if(!photonView.isMine)
 		{
-			Debug.Log("notify remote i am living");
+			;//Debug.Log("notify remote i am living");
 			//photonView.RPC("Polo",PhotonTargets.MasterClient);//e.g: request only. 
 		}	
 	}

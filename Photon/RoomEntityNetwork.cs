@@ -15,7 +15,8 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
 	void Start () {
 		//after loaded,we reset local pv observe to player's mount_kernel. 2013-12-18 by cnsoft
 		//Only used for PaperDoll.
-		DontDestroyOnLoad(this.gameObject);
+		//this should do by parent.
+		//DontDestroyOnLoad(this.gameObject);
 		
 		if (entityType == "Player")
 			EventManager.instance.addEventListener("onSceneLoaded",this.gameObject,"doResetLocalObserve");
@@ -55,6 +56,9 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
 	}
 	
 	void doResetLocalObserve(){
+		//if not in room quit. 
+		
+		
 		//In Room Local we focuse on mount_kernel 2013-12-17
 		//if(photonView.isMine)
 		//if(PhotonNetwork.isMasterClient)//ghost no need change it.
@@ -74,8 +78,19 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
 			//HardCode. hide local robotPaperdoll 2013-12-18 moved to ResetToStone. (ignore that for locally)
 			//ScenePhotonView.RPC("LoadPlayerData",PhotonTargets.Others,new Hashtable());
 			//
+			//Since we are pvp .open its pvp mode.
+			nr.isPvp = true;
+			r.isPvp = true;
+			//fightable enough?
 			Debug.Log(" reset local observe");
+		}else{
+			NetRobot nr = this.gameObject.GetComponent<NetRobot>();
+			nr.isPvp = true;
 		}
+		
+		//
+		//if(entityType == "Player")
+		//	EventManager.instance.removeEventListener("onSceneLoaded",this.gameObject);//
 	}
 	
 	//Basic Serialize function. 
@@ -123,7 +138,7 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
 				if (nr!=null)
 					nr.OnPhotonSerializeView(stream,info);
 				//write or load.
-				Debug.Log("call back serialize for PhotonHandler");
+				//Debug.Log("call back serialize for PhotonHandler");
 			}	
 		}	
 		
@@ -138,7 +153,7 @@ public class RoomEntityNetwork : Photon.MonoBehaviour,IPhotonDataListener{
     {
         if (!photonView.isMine)
         {
-            Debug.Log(" sync position with remote copy");
+           // Debug.Log(" sync position with remote copy");
 			//Update remote player (smooth this, this looks good, at the cost of some accuracy)
 			Transform _localTS = this.owner.transform;
             _localTS.position = Vector3.Lerp(_localTS.position, correctPlayerPos, Time.deltaTime * 5);

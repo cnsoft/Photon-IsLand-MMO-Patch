@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-using UIPackage;
-
 /// <summary>
 /// Room Engine. used in Cloud Mode. RPC Method should not in this class.
 /// 
@@ -18,6 +16,7 @@ public class RoomEngine : Photon.MonoBehaviour
 	// Use this for initialization
 	
 	public GameObject _locPlayer;
+	public string roomMode ="default"; //1v1
 	void Start ()
 	{
 		//maybe we should use event to control this start.
@@ -33,7 +32,14 @@ public class RoomEngine : Photon.MonoBehaviour
 		Debug.LogWarning("RoomConnect connecting..");
 	}
 	
-	public void DisConnect(){
+	public void DisConnect(){		
+		//Destroy GameObject. 2013-12-31 done!
+		if(photonView!=null)
+			PhotonNetwork.Destroy( photonView);
+		if(PhotonNetwork.isMasterClient)//only masterclient can do it
+			PhotonNetwork.DestroyAll();
+		//Quit
+		PhotonNetwork.LeaveRoom();		
 		PhotonNetwork.Disconnect();
 		Debug.LogWarning("Room DisConnecting..");
 		
@@ -44,14 +50,22 @@ public class RoomEngine : Photon.MonoBehaviour
     {
         Debug.LogWarning ("JoinRandom!");
 		//it seems we should use customProperties. private_10_scene000_2  私有房间最多10人.场景scene000 难度2.
-		//
-        PhotonNetwork.JoinRandomRoom();
+		//only join 1v1 mode. maybe we should moved to other place. by cnsoft 		
+				
+		Hashtable expectedCustomRoomProperties = new Hashtable() { { "map", 1 } };
+		PhotonNetwork.JoinRandomRoom(expectedCustomRoomProperties,2);
+		
+        //default mode PhotonNetwork.JoinRandomRoom();
 		_roomStatus = 0;
     }
 
     void OnPhotonRandomJoinFailed()
     {
-        PhotonNetwork.CreateRoom(null);
+		string[] roomPropsInLobby = { "map", "ai","level" };
+		Hashtable customRoomProperties = new Hashtable() { { "map", 1 },{"level",5} };
+		string roomName = null;
+		PhotonNetwork.CreateRoom(roomName, true, true, 2, customRoomProperties, roomPropsInLobby);		
+        //PhotonNetwork.CreateRoom(null);
 		//
 		Debug.Log("Let me create Room");
 		this._roomStatus = 1; //
@@ -70,6 +84,8 @@ public class RoomEngine : Photon.MonoBehaviour
 		ScenePhotonView.RPC("LoadPlayerData",PhotonTargets.Others,new Hashtable());
 		//
 		this.doManualPvInit();
+		//dont do this.since this function is called by EventManager. 
+		//EventManager.instance.removeEventListener("onSceneLoaded",this.gameObject);//clear it.
 	}
 	
 	
@@ -112,7 +128,7 @@ public class RoomEngine : Photon.MonoBehaviour
 		//should changed to ui or other handler not here.
 		int sceneId = 8886; //not same with buildings. 
 		//?
-		UIHelper.getMaster.chmGetPhysicsHandler().pcsTeleportTo(-1, sceneId );
+		HelperUtils.hlpEngineGetPlayer().chmGetPhysicsHandler().pcsTeleportTo( -1, sceneId );
 		//Debug.LogWarning("will moved to scene 3");
 		//
 		EventManager.instance.dispatchEvent(new CustomEvent("JoinedRoom"));		
@@ -136,15 +152,19 @@ public class RoomEngine : Photon.MonoBehaviour
 		//only local interface can be used.
 		Debug.Log(" ScenePV is used locally. " + ScenePhotonView);
 		
+		
+		//Attached Chat here.
+		//ChatDemo chatPv = (ChatDemo) _locPlayer.gameObject.AddComponent("ChatDemo");
 		//TestNetBox.. 
-	
+		//set Player Id to used in chat system.
+		//PhotonNetwork.SetPlayerCustomProperties(new Hashtable(){{"idname",string.Format("id%1",photonView.viewID) }});
 		//		
 		//PhotonNetwork.LoadLevel(4);
 		
 		//Todo: Spawn Level Game Object by level file. instead of .unity. 
 		//e.g: create a monster.
 		//PhotonNetwork.InstantiateSceneObject("network/NetRobotPaperDoll",Vector3.zero,Quaternion.identity,0);//
-		
+		PhotonNetwork.playerName = "Player" + PhotonNetwork.room.playerCount;
 		//Component[] coms = GameObject.FindGameObjectsWithTag("monster");
 		//int id = coms[0].GetInstanceID;
 		
@@ -202,7 +222,23 @@ public class RoomEngine : Photon.MonoBehaviour
 		{
 			Debug.Log(" _local net link is: " + _locPlayer.activeInHierarchy);
 			//_locPlayer.SetActive(true);
-		}	
+		}
+		//state description:		
+		//if playercount ==2 Room.SetCustomProperties("gamestate",1) //broadcast to all clients. (change from waiting to running - remove ui.)
+		//if not enough player. is waiting only.. 
+		//from running. count 10 second to stage1:open door. 10m stage2:show bottle. 30m: failure.
+		//anytime 1player die. changed to BattleDone. >show ui click to quit pvp
+		if(PhotonNetwork.room!=null)
+		{
+			int playerCount = PhotonNetwork.room.playerCount;
+			Debug.Log(" playercount="+playerCount);
+			//string lastState = PhotonNetwork.room.customProperties["gamestate"];
+			//if changed state. do change.
+			//if(PhotonNetwork.isMasterClient)
+			//	PhotonNetwork.room.SetCustomProperties(new Hashtable(){{"map",1}} ); //current sceneid.
+			//...hide room room name will be encrypted with secretky. so have to use chat and click into room.
+		}
+		
 	}
 	
     void OnGUI()		

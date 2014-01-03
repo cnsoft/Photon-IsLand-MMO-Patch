@@ -16,8 +16,6 @@ using Photon.MmoDemo.Common;
 
 using UnityEngine;
 
-using UIPackage; //only for test.
-
 /// <summary>
 /// The mmo engine.
 /// </summary>
@@ -45,6 +43,8 @@ public class MmoEngine : Radar, IGameListener
 	
 	public const string PlayerAvatarTag = "human_kernel";//"New_Main";
 	public string OtherPlayerRes = "RobotPaperDoll";//"New_Main";
+	
+	public static MmoEngine _instance=null;
 	
 	//add for switch world and room state
 	public bool _isAway = false;
@@ -148,6 +148,8 @@ public class MmoEngine : Radar, IGameListener
     /// </summary>
     public void Start()
     {
+	
+		
         try
         {
 			
@@ -156,6 +158,8 @@ public class MmoEngine : Radar, IGameListener
 			EventManager.instance.addEventListener("onReqEnterRoom",this.gameObject,"onReqEnterRoomMode");
 			EventManager.instance.addEventListener("onReqLeaveRoom",this.gameObject,"onReqLeaveRoomMode");
 			//
+			//EventManager.instance.addEventListener("onBattleQuit",this.gameObject,"onBattleQuit");
+			
 			
             this.style.normal.textColor = Color.white;
 
@@ -207,14 +211,40 @@ public class MmoEngine : Radar, IGameListener
         }
     }
 	
-	
+	void Awake(){
+		//if find old one kill it.
+		if ( _instance !=null )
+		{
+			Debug.Log("ensure only one mmo engine is running");
+			//also destroy container.			
+			if (this.gameObject.transform.parent){
+				DestroyImmediate(this.gameObject.transform.parent.gameObject);
+			}
+			//DestroyImmediate(this.gameObject);
+			return;
+		}
+		_instance = this;
+		
+	}
 #region SceneRegion
 	
 	public void onReqLeaveRoomMode(){
+		
+//		ChatDemo chatPv = (ChatDemo) this.gameObject.GetComponent("ChatDemo");
+//		if(chatPv)
+//			GameObject.DestroyObject(chatPv);
+//		//done.
+		
 		//attached an RoomPhotonView .and switch to room mode. 
-		RoomEngine roomPV = (RoomEngine) this.gameObject.AddComponent("RoomEngine");
+		RoomEngine roomPV = (RoomEngine) this.gameObject.GetComponent("RoomEngine");
 		//when it start, createRoom. leaveWorld.	
-		roomPV.DisConnect();		
+		if(roomPV)
+		{
+			roomPV.DisConnect();
+			GameObject.DestroyObject(roomPV);
+		}	
+		//return to world.
+		this.doWorldLeaved(false);
 		
 	}
 	
@@ -227,8 +257,10 @@ public class MmoEngine : Radar, IGameListener
 		//attached an RoomPhotonView .and switch to room mode. 
 		RoomEngine roomPV = (RoomEngine) this.gameObject.AddComponent("RoomEngine");
 		//when it start, createRoom. leaveWorld.	
-		roomPV.Connect();		
+		roomPV.Connect();	
 		
+		//add Chatdemo
+		//ChatDemo chatPv = (ChatDemo) this.gameObject.AddComponent("ChatDemo");
 	}
 	
 	
@@ -249,7 +281,7 @@ public class MmoEngine : Radar, IGameListener
 	public void onSceneLoaded(CustomEvent evt)
 	{
 		LogDebug(this.engine," todo: loaded custom level data here.");
-		this.doWorldLeaved();
+		this.doWorldLeaved(true);
 		//todo disable walkdemo.
 		//WalkDemo w = this.gameObject.GetComponent<WalkDemo>();
 		//w.enabled = false;
@@ -274,11 +306,11 @@ public class MmoEngine : Radar, IGameListener
 		//to invoke offical interface
 	}
 	
-	public void doWorldLeaved()
+	public void doWorldLeaved(bool leaved)
 	{
 		WalkDemo w = this.gameObject.GetComponent<WalkDemo>();
-		w.enabled = false;
-		_isAway = true;
+		w.enabled = !leaved;
+		_isAway = leaved;
 		this.LogInfo(this.engine," world enter away mode.");
 		//not controlled by player anymore. not update anymore
 	}
@@ -446,7 +478,7 @@ public class MmoEngine : Radar, IGameListener
     public void OnDisconnect(Game game, StatusCode returnCode)
     {
         Debug.Log("disconnected");
-		this.doWorldLeaved();
+		this.doWorldLeaved(true);
     }
 	
 

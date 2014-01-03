@@ -9,6 +9,7 @@ public class NetRobot :Robot, IPhotonDataListener
 		
 		//Robot _cur = HelperUtils.hlpEngineGetPlayer();
 		this.isRealClient = false;
+		this.isPvp = true;
 		base.Start();
 		//paperdollHandler_ = new PaperdollSpace.AvatarPaperdollCaster( this );
 		
@@ -61,7 +62,9 @@ public class NetRobot :Robot, IPhotonDataListener
 		//only update fxhandle
 		if(!photonView.isMine)
 		{
-			this.chmGetFXHandler().efxOnUpdate();			
+			FXSpace.EntityFXCaster fx =  this.chmGetFXHandler();
+			if(fx!=null)
+				fx.efxOnUpdate();			
 		}
 		
 		//doEfxCast(GlobalTechConfig.FX_BUILDIN_RENASCENCE);
@@ -122,7 +125,7 @@ public class NetRobot :Robot, IPhotonDataListener
 		//if(_watchedRobot)
 		if(!photonView.isMine)
 		{	
-		 	Debug.Log("attach efx with remote data:"+fxid);
+		 	//Debug.Log("attach efx with remote data:"+fxid);
 			this.chmGetFXHandler().efxActive(fxid);
 			this.chmGetFXHandler().efxCast(fxid);
 			//we only need this wrapper function.
@@ -138,6 +141,40 @@ public class NetRobot :Robot, IPhotonDataListener
 		this.chmGetFXHandler().efxDisActiveFromFxId(fxid);
 	}
 		
+	[RPC]
+	void doFightDoFinal(int targetid,int finalNumber){
+		//
+		//this.chmOnFightDoFinal( recordFinal );
+		Debug.Log("got real notify: " + this.id + " you hit target:"+targetid +" damage:"+finalNumber);
+	}
+	
+	[RPC]
+	//void doFightBeenFinal( FightSpace.FightRecordFinalType recordFinal )
+	//normally. this is trigger by remote player. notify this instance: its ghost entity is attacked in remote side.
+	void doFightBeenFinal( int casterid,int finalNumber )
+	{
+		//isLocal? remote copy is hited.
+		if(photonView.isMine)
+		{
+			//UIPackage.UIMananger.uiDamagePush(this, finalNumber );
+			Debug.Log("for local damage notify");
+			//should call watchedRobot since real player is watchedRobot.
+			if(this._watchedRobot){
+				StatusSpace.ShareStatusCaster statusMaster =  this._watchedRobot.chmGetStatusHandler();
+				if( statusMaster != null && finalNumber > 0 )
+				{
+					//find caster with guid.
+					statusMaster.stsUpdateHealth( -finalNumber,null );// recordReceived.caster );
+					//Debug.Log (" change health ui?");
+				}
+			}
+			
+		}	
+		//Push Damage! 
+		//this.chmOnFightBeenFinal(recordFinal);
+	}
+	
+	
 	#endregion
 	
 //	void setAnimatorAttrxxxx(string attr,int _type,params object[]datas)
