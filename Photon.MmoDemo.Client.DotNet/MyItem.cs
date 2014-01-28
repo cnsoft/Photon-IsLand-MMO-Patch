@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MyItem.cs" company="Exit Games GmbH">
 //   Copyright (c) Exit Games GmbH.  All rights reserved.
 // </copyright>
@@ -11,12 +11,17 @@ namespace Photon.MmoDemo.Client
 {
     using System;
     using System.Collections;
+	using Hashtable = ExitGames.Client.Photon.Hashtable;
 
     /// <summary>
     /// The mmo item.
     /// </summary>
     public class MyItem : Item
     {
+		/// <summary>
+		/// The moved.
+		/// </summary>
+		//public new event Action<Item> Moved;
         /// <summary>
         /// Initializes a new instance of the <see cref="MyItem"/> class. 
         /// </summary>
@@ -32,7 +37,9 @@ namespace Photon.MmoDemo.Client
         /// <param name="text">
         /// The text property.
         /// </param>
-        [CLSCompliant(false)]
+		/// 
+		/// 
+		[CLSCompliant(false)]
         public MyItem(string id, byte type, Game game, string text)
             : base(id, type, game)
         {

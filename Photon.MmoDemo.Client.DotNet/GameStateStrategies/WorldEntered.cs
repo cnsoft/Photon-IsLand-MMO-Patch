@@ -323,7 +323,7 @@ namespace Photon.MmoDemo.Client.GameStateStrategies
 
                 if (item.IsMine == false)
                 {
-                    var propertiesSet = (Hashtable)eventData[(byte)ParameterCode.PropertiesSet];
+					var propertiesSet = (ExitGames.Client.Photon.Hashtable)eventData[(byte)ParameterCode.PropertiesSet];
 
                     item.SetColor((int)propertiesSet[Item.PropertyKeyColor]);
                     item.SetText((string)propertiesSet[Item.PropertyKeyText]);
@@ -356,7 +356,7 @@ namespace Photon.MmoDemo.Client.GameStateStrategies
 
                 if (item.IsMine == false)
                 {
-                    var propertiesSet = (Hashtable)eventData[(byte)ParameterCode.PropertiesSet];
+					var propertiesSet = (ExitGames.Client.Photon.Hashtable)eventData[(byte)ParameterCode.PropertiesSet];
 
                     if (propertiesSet.ContainsKey(Item.PropertyKeyColor))
                     {
@@ -388,7 +388,7 @@ namespace Photon.MmoDemo.Client.GameStateStrategies
 					//add Rpc here. in here: we notify those who can see me. 
 					if (propertiesSet.ContainsKey (Item.PropertyKey_Rpc)) 
 					{
-						item.Set_Rpc ( (Hashtable)propertiesSet [Item.PropertyKey_Rpc]);
+						item.Set_Rpc ( (ExitGames.Client.Photon.Hashtable)propertiesSet [Item.PropertyKey_Rpc]);
 					}  
 
                 }

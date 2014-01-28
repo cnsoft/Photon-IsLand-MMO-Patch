@@ -14,6 +14,7 @@ namespace Photon.MmoDemo.Client
     using System.Collections.Generic;
 
     using Photon.MmoDemo.Common;
+	using Hashtable = ExitGames.Client.Photon.Hashtable;
 
     /// <summary>
     /// The operations.
@@ -452,7 +453,8 @@ namespace Photon.MmoDemo.Client
                 {
                     { (byte)ParameterCode.ViewDistanceEnter, viewDistanceEnter }, { (byte)ParameterCode.ViewDistanceExit, viewDistanceExit } 
                 };
-            game.SendOperation(OperationCode.SetViewDistance, data, true, Settings.ItemChannel);
+			//hack fix: http://forum.exitgames.com/viewtopic.php?f=5&t=3443  
+			game.SendOperation(OperationCode.SetViewDistance, data, true, Settings.ItemChannel);
         }
 
         /// <summary>

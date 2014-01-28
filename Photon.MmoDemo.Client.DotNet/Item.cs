@@ -13,6 +13,8 @@ namespace Photon.MmoDemo.Client
 	using System.Collections;
     using System.Collections.Generic;
 
+	using Hashtable = ExitGames.Client.Photon.Hashtable;
+
     //public static class ItemExtensions
     //{
     //    public static string DoIt(this IBar bar, T1 a, T2 b)

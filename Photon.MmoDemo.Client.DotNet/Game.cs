@@ -408,10 +408,11 @@ namespace Photon.MmoDemo.Client
         /// <param name = "channelId">
         ///   The channel Id.
         /// </param>
-        public void SendOperation(OperationCode operationCode, Dictionary<byte, object> parameter, bool sendReliable, byte channelId)
+		public void SendOperation(OperationCode operationCode, Dictionary<byte, object> parameter, bool sendReliable, byte channelId)
         {
             if (this.listener.IsDebugLogEnabled)
             {
+				//var Dictionary<byte, object> parameter = (Dictionary<byte, object>) parameter1
                 var builder = new StringBuilder();
                 builder.AppendFormat("{0}: send operation {1}:", this.avatar.Id, operationCode);
                 foreach (var entry in parameter)
